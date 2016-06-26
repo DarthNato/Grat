@@ -1,2 +1,2 @@
 # Grat
-Gratitude system.
+Gratitude, Rewards and Loyalty system.

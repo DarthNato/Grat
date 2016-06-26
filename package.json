@@ -1,0 +1,9 @@
+{
+    "name" : "Grat",
+    "version" : "0.0.0",
+    "license": "MIT",
+    "repository" : "https://github.com/DarthNato/Grat",
+    "dependencies" : {
+        "express" : "latest"
+    }
+}
