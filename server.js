@@ -6,5 +6,9 @@ app.get('/', function (req, res) {
 })
 var port = process.env.PORT || 8000;
 var server = app.listen(port, function () {
-  console.log("This App listening");
-})
+  console.log("This App listening on "+port);
+});
+
+exports.closeServer = function(){
+  server.close();
+};
