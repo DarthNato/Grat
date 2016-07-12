@@ -1,6 +1,6 @@
 var request = require("request");
-var helloWorld = require("../server.js")
-var base_url = "http://localhost:8000/"
+var app = require("../server.js");
+var base_url = "http://localhost:8000/";
 
 describe("Hello World Server", function() {
   describe("GET /", function() {
@@ -13,8 +13,7 @@ describe("Hello World Server", function() {
 
     it("returns Hello World", function(done) {
       request.get(base_url, function(error, response, body) {
-        expect(body).toBe("Hello World!! :D");
-        helloWorld.closeServer();
+        expect(body).toBe("Hello World!! =D");
         done();
       });
     });

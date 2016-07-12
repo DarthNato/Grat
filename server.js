@@ -3,7 +3,6 @@ var app = express();
 
 app.use(function(req,res,next){
 	//we should handle autorization here for every request.
-	console.log("Handle auth");
 	if (true)
 		next();
 	else
