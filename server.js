@@ -16,7 +16,7 @@ var server = app.listen(port, function () {
 
 //DB handling
 //heroku's automatic uri, or local host
-var databaseLink = process.env.MONGOLAB_URI || 'mongodb://localhost/grat';
+var databaseLink = process.env.MONGODB_URI || 'mongodb://localhost/grat';
 console.log("Trying to connect to "+databaseLink);
 mongoose.connect(databaseLink);
 var db = mongoose.connection;
