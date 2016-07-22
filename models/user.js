@@ -4,17 +4,17 @@ var Schema = mongoose.Schema;
 var UserSchema = new Schema({
     user_name:String,
     how_to_grat:{
-        new_customer: Number,
-        recommended_customer: Number,
-        recommending_customer: Number,
+        new_customer: {type: Number, min: 0},
+        recommended_customer: {type: Number, min: 0},
+        recommending_customer: {type: Number, min: 0},
         by_visits:{
-            for_every: Number,
-            with_minimun: Number,
-            gets_a_reward: Number
+            for_every: {type: Number, min: 1},
+            with_minimun: {type: Number, min: 0},
+            gets_a_reward: {type: Number, min: 0},
         },
         by_spending:{
-            when_spent: Number,
-            gets_a_reward: Number
+            when_spent: {type: Number, min: 0},
+            gets_a_reward: {type: Number, min: 0}
         }
       },
     contact_history:
