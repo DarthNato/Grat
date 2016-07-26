@@ -3,20 +3,21 @@ var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
 var mongoose = require('mongoose');
 var app = express();
+var _ = require('./config.js');
 
 //models
 var User = require('./models/user.js');
 
 //Server init
-//heroku's automatic port, or 8000
-var port = process.env.PORT || 4000;
+//heroku's automatic port, or default
+var port = process.env.PORT || _.appLocalPort;
 var server = app.listen(port, function () {
   console.log("This App listening on "+port);
 });
 
 //DB handling
 //heroku's automatic uri, or local host
-var databaseLink = process.env.MONGODB_URI || 'mongodb://localhost/grat';
+var databaseLink = process.env.MONGODB_URI || _.appLocalMongoUrl;
 mongoose.connect(databaseLink);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -27,7 +28,7 @@ db.once('open', function () {
 
 //Everything gets here.
 app.use(function (req,res,next){
-	//we should handle autorization here for every request. // or use an express auth middelware.
+	//we should handle autorization here for every request. // or use an express auth middleware.
 	if (true)
 		next();
 	else
@@ -96,7 +97,7 @@ app.put('/user/:id/how_to_grat', function (req, res, next){
 	//TODO: authorization function should give us the information of the requester user.
 	//We can only update our own user, except for contact_history
 
-	//Right now, we are just updating the whole object. Overwriting any existing value!! (we may want to change this in the future).
+	//Right now, we are just updating the whole how_to_grat object. Overwriting any existing value!! (we may want to change this in the future).
 	User.update({'_id':req.params.id}, { $set: {'how_to_grat':req.body} }, function (err, user){
 		if (err) next(err);
 		else res.send("Promo config for User "+req.params.id+" updated");

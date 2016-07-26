@@ -1,6 +1,7 @@
 var request = require("request");
 var app = require("../server.js");
-var base_url = "http://localhost:4000";
+var _ = require('../config.js');
+var base_url = _.appLocalUrl;
 
 describe("Basic user handling: ", function() {
   it("Get an error when quering a non existing user", function(done) {

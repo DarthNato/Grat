@@ -21,7 +21,7 @@ var UserSchema = new Schema({
     [
         {
             vendor_id:{type: Schema.ObjectId, ref: 'User'},
-            transaction_log:{type: Schema.ObjectId, ref: 'User'},
+            transaction_log:{type: Schema.ObjectId, ref: 'User'}, //to be changed to reference a transaction log
             to_next_visit_promo: Number,
             to_next_spent_promo: Number,
             recommending_friend:{type: Schema.ObjectId, ref: 'User'},

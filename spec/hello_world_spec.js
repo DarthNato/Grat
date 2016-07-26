@@ -1,6 +1,7 @@
 var request = require("request");
 var app = require("../server.js");
-var base_url = "http://localhost:4000/";
+var _ = require('../config.js');
+var base_url = _.appLocalUrl;
 
 describe("Hello World Server", function() {
   describe("GET /", function() {
@@ -12,7 +13,7 @@ describe("Hello World Server", function() {
     });
 
     it("returns Hello World", function(done) {
-      request.get(base_url, function(error, response, body) {
+      request.get(base_url+'/', function(error, response, body) {
         expect(body).toBe("Hello World!! =D");
         done();
       });
