@@ -104,6 +104,19 @@ app.put('/user/:id/how_to_grat', function (req, res, next){
 	});
 });
 
+//Create transactions to be forwarded to the payment server, or to be approved by the provider.
+app.get('/new_transaction', function (req, res, next){
+//TODO, Make sure new transactions are only created for users on their own behalf.
+	User.findById(req.body.customer, function (err, user){
+		if (err) next(err);
+		if (user) {
+			//TODO build transaction acording to the request.
+			res.send(user);
+		}
+		else res.sendStatus(404); //user not found
+	});
+});
+
 exports.closeServer = function (){
   server.close();
 };
