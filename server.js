@@ -104,18 +104,68 @@ app.put('/user/:id/how_to_grat', function (req, res, next){
 	});
 });
 
-//Create transactions to be forwarded to the payment server, or to be approved by the provider.
+//Create and return the transactions to be forwarded to the payment server, or to be approved by the provider.
 app.get('/new_transaction', function (req, res, next){
-//TODO, Make sure new transactions are only created for users on their own behalf.
-	User.findById(req.body.customer, function (err, user){
+	//TODO, Make sure new transactions are only created for users on their own behalf.
+	User.findById(req.body.customer, function (err, customer){
 		if (err) next(err);
-		if (user) {
-			//TODO build transaction acording to the request.
-			res.send(user);
+		if (customer) {
+			User.findById(req.body.provider, function (err, provider){
+				if (err) next(err);
+				if (provider) {
+					var transaction = buildTransaction(customer, provider, req.body.amount);
+
+					//TODO, This response should be signed to guarantee that grat server created it, Client will send this transaction
+					//to the payment verification service (electronic payments, or provider directly) to accept it.
+					//We will recibe then from the payment verification service the commit for the transaction (if approved).
+					if (transaction) res.send(transaction);
+					else res.sendStatus(400);
+				}
+				else res.sendStatus(404); //provider not found
+			});
 		}
 		else res.sendStatus(404); //user not found
 	});
 });
+
+//Build the transactions to be forwarded to the payment server, or to be approved by the provider.
+buildTransaction = function (customer, provider, amount){
+	var resTrans={
+		original_amount: amount,
+		customer:customer._id,
+		provider:provider._id
+	};
+	var newToProvider = false;
+	if (!_.isArray(customer.contact_history))
+		newToProvider = true;
+	else {
+		//find an entry in the customer contact_history that matches the provider as the vendor id.
+		var customerProviderHistory = customer.contact_history.find(function(){ return this.vendor_id==provider._id});
+		if (customerProviderHistory == undefined)
+			newToProvider = true;
+	}
+	if (newToProvider){
+		//New customer promo
+		resTrans.reward_amount = provider.how_to_grat.new_customer ? provider.how_to_grat.new_customer : 0;
+		resTrans.paied_amount = Math.max(0, resTrans.original_amount-resTrans.reward_amount );
+		resTrans.transaction_count = 0; //new to provider, means we dont have any transactions yet.
+		if (provider.how_to_grat.by_visits.with_minimun){
+			//provider has a by visits promo
+			resTrans.to_next_visit_promo = provider.how_to_grat.by_visits.for_every;
+			if (resTrans.paied_amount >= provider.how_to_grat.by_visits.with_minimun)
+				resTrans.to_next_visit_promo--;
+		}
+		if (provider.how_to_grat.by_spending.when_spent){
+			//provider has a by spending promo
+			resTrans.to_next_spent_promo = provider.how_to_grat.by_spending.when_spent - resTrans.paied_amount;
+		}
+
+	} else {
+		//TODO other promos for existing customers
+	} 
+
+	return resTrans;
+};
 
 exports.closeServer = function (){
   server.close();

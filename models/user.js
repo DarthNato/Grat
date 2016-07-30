@@ -20,8 +20,9 @@ var UserSchema = new Schema({
     contact_history:
     [
         {
-            vendor_id:{type: Schema.ObjectId, ref: 'User'},
+            user_id:{type: Schema.ObjectId, ref: 'User'}, //This could be a customer, or a provider.
             transaction_log:{type: Schema.ObjectId, ref: 'User'}, //to be changed to reference a transaction log
+            transaction_count: Number,
             to_next_visit_promo: Number,
             to_next_spent_promo: Number,
             recommending_friend:{type: Schema.ObjectId, ref: 'User'},
